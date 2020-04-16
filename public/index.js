@@ -6,6 +6,10 @@ function delete_ajax(url, id, name) {
     }
 }
 
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+
 if(window.innerWidth <= 765) {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");

@@ -29,11 +29,30 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item {% if 'HomeController' in app.request.attributes.get("_controller") %}active{% endif %}">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{ path('home') }}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Home</span>
               </a>
             </li>
+
+{% if is_granted('ROLE_ADMIN') %}
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">Administration</div>
+
+            <li class="nav-item {% if 'UsersController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Personen</span>
+              </a>
+              <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item  {% if 'UsersController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('users') }}">Benutzerverwaltung</a>
+                </div>
+              </div>
+            </li>
+{% endif %}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -127,8 +146,8 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Valerie Luna</span>
-                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.vorname }} {{ app.user.nachname }}</span>
+                <i class="fas fa-user"></i>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -204,7 +223,7 @@
         <div class="modal-body">Bist du dir sicher, dass du dich abmelden möchtest?</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Abbrechen</button>
-          <a class="btn btn-primary" href="#">Abmelden</a>
+          <a class="btn btn-primary" href="{{ path('app_logout') }}">Abmelden</a>
         </div>
       </div>
     </div>
