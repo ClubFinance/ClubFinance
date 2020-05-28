@@ -14,9 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UsersController extends AbstractController
+class AccountController extends AbstractController
 {
-
     private $rollen = [
         'Normaler Benutzer (standard)' => 'ROLE_USER',
         'Administrator' => 'ROLE_ADMIN',
@@ -28,70 +27,10 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/users", name="users")
+     * @Route("/account/profil", name="account")
      */
-    public function index()
-    {
-        $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(), array('nachname' => 'ASC'));
-
-        return $this->render('users/index.html.twig', [
-            'users' => $users,
-        ]);
-    }
-
-    /**
-     * @Route("/users/new", name="users_new")
-     * Method({"GET", "POST"})
-     */
-    public function new(Request $request) {
-        $user = new User();
-        
-        $form = $this->createFormBuilder($user)
-            ->add('vorname', TextType::class, [
-                'attr' => ['class' => 'form-control mb-3']
-            ])
-            ->add('nachname', TextType::class, [
-                'attr' => ['class' => 'form-control mb-3']
-            ])
-            ->add('email', EmailType::class, [
-                'attr' => ['class' => 'form-control mb-3']
-            ])
-            ->add('password', PasswordType::class, [
-                'attr' => ['class' => 'form-control mb-3']
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Speichern',
-                'attr' => ['class' => 'btn btn-primary mt-3'],
-            ])
-            ->getForm();
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() &&  $form->isValid()) {
-            $data = $form->getData();
-
-            $data->setRoles(array("ROLE_USER"));
-            $data->setPassword($this->passwordEncoder->encodePassword(
-                $data,$data->getPassword()
-            ));
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($data);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('users');
-        }
-
-        return $this->render('users/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/users/edit/{id}", name="users_edit")
-     * Method({"GET", "POST"})
-     */
-    public function edit(Request $request, $id) {
+    public function index(Request $request) {
+        $id = $this->getUser();
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
         $form = $this->createFormBuilder($user)
@@ -109,6 +48,7 @@ class UsersController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3'],
                 'choices' => $this->rollen,
                 'multiple' => true,
+                'disabled' => true,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Speichern',
@@ -122,20 +62,21 @@ class UsersController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            return $this->redirectToRoute('users');
+            // return $this->redirectToRoute('account');
+            $this->addFlash('success', 'Das Profil wurde erfolgreich gespeichert.');
         }
 
-        return $this->render('users/edit.html.twig', [
+        return $this->render('account/index.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
         ]);
     }
 
     /**
-     * @Route("/users/setpw/{id}", name="users_setpw")
-     * Method({"GET", "POST"})
+     * @Route("/account/passwort", name="account_passwort")
      */
-    public function setpw(Request $request, $id) {
+    public function pw(Request $request) {
+        $id = $this->getUser();
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
         $form = $this->createFormBuilder($user)
@@ -164,25 +105,13 @@ class UsersController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            return $this->redirectToRoute('users');
+            // return $this->redirectToRoute('account_passwort');
+            $this->addFlash('success', 'Das Passwort wurde erfolgreich geändert.');
         }
 
-        return $this->render('users/setpw.html.twig', [
+        return $this->render('account/pw.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
         ]);
-    }
-
-    /**
-     * @Route("users/delete/{id}", name="users_delete")
-     */
-    public function delete($id) {
-        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($user);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('users');
     }
 }
