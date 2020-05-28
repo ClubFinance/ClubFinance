@@ -9,6 +9,7 @@ framework:
         handler_id: null
         cookie_secure: auto
         cookie_samesite: lax
+        name: ClubFinance
 
     #esi: true
     #fragments: true

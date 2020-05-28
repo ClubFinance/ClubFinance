@@ -18,8 +18,8 @@ class UsersController extends AbstractController
 {
 
     private $rollen = [
-        'Basic User (Standartmässig aktiviert)' => 'ROLE_USER',
-        'Admin-User' => 'ROLE_ADMIN',
+        'Normaler Benutzer (standard)' => 'ROLE_USER',
+        'Administrator' => 'ROLE_ADMIN',
     ];
 
     private $passwordEncoder;
@@ -105,7 +105,7 @@ class UsersController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3']
             ])
             ->add('roles', ChoiceType::class, [
-                'label' => 'Rollen (mehrere auswählen mit Ctrl-Taste)',
+                'label' => 'Rolle',
                 'attr' => ['class' => 'form-control mb-3'],
                 'choices' => $this->rollen,
                 'multiple' => true,

@@ -33,7 +33,7 @@
                         <td>
                             {% for role in user.roles %}{{ role|replace({'ROLE_': ''})|capitalize }}{% if not loop.last %}, {% endif %}{% endfor %}
                         </td>
-                        <td>
+                        <td align="right">
                             <a href="users/setpw/{{ user.id }}" class="btn btn-warning btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Neues Passwort setzen"><i class="fas fa-lock"></i></a>
                             <a href="users/edit/{{ user.id }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
                             <a href="javascript:delete_ajax('users/delete/', '{{ user.id }}', '{{ user.vorname }} {{ user.nachname }}')" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
