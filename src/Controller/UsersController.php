@@ -79,7 +79,8 @@ class UsersController extends AbstractController
             $entityManager->persist($data);
             $entityManager->flush();
 
-            return $this->redirectToRoute('users');
+            // return $this->redirectToRoute('users');
+            $this->addFlash('success', 'Der Nutzer wurde erfolgreich angelegt.');
         }
 
         return $this->render('users/new.html.twig', [
@@ -122,7 +123,8 @@ class UsersController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            return $this->redirectToRoute('users');
+            // return $this->redirectToRoute('users');
+            $this->addFlash('success', 'Das Profil wurde erfolgreich gespeichert.');
         }
 
         return $this->render('users/edit.html.twig', [
@@ -164,7 +166,8 @@ class UsersController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            return $this->redirectToRoute('users');
+            // return $this->redirectToRoute('users');
+            $this->addFlash('success', 'Das Passwort wurde erfolgreich gesetzt.');
         }
 
         return $this->render('users/setpw.html.twig', [
