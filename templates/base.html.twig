@@ -35,6 +35,24 @@
               </a>
             </li>
 
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">Buchhaltung</div>
+
+            <li class="nav-item {% if 'UsersController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBuchhaltung" aria-expanded="true" aria-controls="collapseBuchhaltung">
+                <i class="fas fa-fw fa-hourglass-end"></i>
+                <span>Abschlüsse</span>
+              </a>
+              <div id="collapseBuchhaltung" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item  {% if 'UsersController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('users') }}">Bilanz</a>
+                  <a class="collapse-item  {% if 'UsersController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('users') }}">Erfolgsrechnung</a>
+                </div>
+              </div>
+            </li>
+
 {% if is_granted('ROLE_ADMIN') %}
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -42,11 +60,11 @@
             <div class="sidebar-heading">Administration</div>
 
             <li class="nav-item {% if 'UsersController' in app.request.attributes.get("_controller") %}active{% endif %}">
-              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
                 <i class="fas fa-fw fa-users"></i>
                 <span>Personen</span>
               </a>
-              <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+              <div id="collapseAdmin" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                   <a class="collapse-item  {% if 'UsersController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('users') }}">Benutzerverwaltung</a>
                 </div>
