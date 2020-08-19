@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Hauptbuch;
+use App\Entity\Kontenplan;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -40,10 +41,10 @@ class HauptbuchController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3']
             ])
             ->add('soll', NumberType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3 autocomplete']
             ])
             ->add('haben', NumberType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3 autocomplete']
             ])
             ->add('betrag', MoneyType::class, [
                 'divisor' => 100,
@@ -141,5 +142,17 @@ class HauptbuchController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('hauptbuch');
+    }
+
+    /**
+     * @Route("hauptbuch/konti/json", name="hauptbuch_konti")
+     */
+    public function konti_json(Request $request) {
+        $term = $request->query->get('term');
+        $konti = $this->getDoctrine()->getRepository(Kontenplan::class)->createQueryBuilder('p')->where('p.id4 LIKE :word')->orWhere('p.name LIKE :word')->setParameter('word', '%'.$term.'%')->getQuery()->getResult();
+
+        return $this->render('hauptbuch/json.html.twig', [
+            'konti' => $konti,
+        ]);
     }
 }
