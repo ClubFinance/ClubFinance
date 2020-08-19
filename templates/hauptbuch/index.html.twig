@@ -3,5 +3,45 @@
 {% block pagetitle %}Hauptbuch{% endblock %}
 
 {% block body %}
-Hello World!
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Benutzer</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('users_new') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neuer Benutzer</span>
+        </a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">E-Mail</th>
+                    <th scope="col">Passwort</th>
+                    <th scope="col">Rollen</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.vorname }} {{ user.nachname }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>********</td>
+                        <td>
+                            {% for role in user.roles %}{{ role|replace({'ROLE_': ''})|capitalize }}{% if not loop.last %}, {% endif %}{% endfor %}
+                        </td>
+                        <td align="right">
+                            <a href="users/setpw/{{ user.id }}" class="btn btn-warning btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Neues Passwort setzen"><i class="fas fa-lock"></i></a>
+                            <a href="users/edit/{{ user.id }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:delete_ajax('users/delete/', '{{ user.id }}', '{{ user.vorname }} {{ user.nachname }}')" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

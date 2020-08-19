@@ -36,6 +36,16 @@ class Hauptbuch
      */
     private $beschreibung;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $betrag;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $beleg;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -85,6 +95,30 @@ class Hauptbuch
     public function setBeschreibung(?string $beschreibung): self
     {
         $this->beschreibung = $beschreibung;
+
+        return $this;
+    }
+
+    public function getBetrag(): ?float
+    {
+        return $this->betrag;
+    }
+
+    public function setBetrag(float $betrag): self
+    {
+        $this->betrag = $betrag;
+
+        return $this;
+    }
+
+    public function getBeleg(): ?string
+    {
+        return $this->beleg;
+    }
+
+    public function setBeleg(?string $beleg): self
+    {
+        $this->beleg = $beleg;
 
         return $this;
     }
