@@ -93,10 +93,10 @@ class HauptbuchController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3']
             ])
             ->add('soll', NumberType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3 autocomplete']
             ])
             ->add('haben', NumberType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3 autocomplete']
             ])
             ->add('betrag', MoneyType::class, [
                 'divisor' => 100,

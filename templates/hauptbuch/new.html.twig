@@ -19,7 +19,7 @@
                 {{ message }}
             </div>
         {% endfor %}
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'id': 'form_hauptbuch'}}) }}
         {{ form_widget(form) }}
         {{ form_end(form) }}
     </div>
@@ -33,11 +33,19 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script>
-    $( function() {
+    $(function() {
         $(".autocomplete").autocomplete({
             minLength: 1,
             source: "/hauptbuch/konti/json",
         });
-    } );
+    });
+
+    $('#form_hauptbuch').submit(function() {
+        var soll = document.querySelector('#form_soll').value.split(" - ")[0];
+        document.querySelector('#form_soll').value = soll;
+        var haben = document.querySelector('#form_haben').value.split(" - ")[0];
+        document.querySelector('#form_haben').value = haben;
+        return true;
+    });
 </script>
 {% endblock %}
