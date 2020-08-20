@@ -34,7 +34,7 @@
                          <td>{{ satz.datum|date('d.m.Y') }}</td>
                          <td>{{ satz.soll }}</td>
                          <td>{{ satz.haben }}</td>
-                         <td>CHF {{ (satz.betrag)/100 }}</td>
+                         <td>CHF {{ ((satz.betrag)/100)|replace({ '.': ','}) }}</td>
                          <td>{{ satz.beschreibung }}</td>
                          <td>{{ satz.beleg }}</td>
                         <td align="right">

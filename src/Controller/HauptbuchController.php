@@ -52,11 +52,13 @@ class HauptbuchController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3']
             ])
             ->add('beschreibung', TextareaType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3'],
+                'required' => false,
             ])
             ->add('beleg', TextType::class, [
                 'label' => 'Beleg(e)',
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3'],
+                'required' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Speichern',
@@ -104,11 +106,13 @@ class HauptbuchController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3']
             ])
             ->add('beschreibung', TextareaType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3'],
+                'required' => false,
             ])
             ->add('beleg', TextType::class, [
                 'label' => 'Beleg(e)',
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3'],
+                'required' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Speichern',
