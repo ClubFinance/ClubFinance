@@ -47,5 +47,14 @@
         document.querySelector('#form_haben').value = haben;
         return true;
     });
+
+    $(document).ready(function() {
+        $.getJSON( "/hauptbuch/konti/json", function(data) {
+            var soll = document.querySelector('#form_soll').value;
+            document.querySelector('#form_soll').value = data[soll];
+            var haben = document.querySelector('#form_haben').value;
+            document.querySelector('#form_haben').value = data[haben];
+        });
+    });
 </script>
 {% endblock %}
