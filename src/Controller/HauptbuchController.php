@@ -38,7 +38,8 @@ class HauptbuchController extends AbstractController
         
         $form = $this->createFormBuilder($hauptbuch)
             ->add('datum', DateType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3'],
+                'data' => new \DateTime()
             ])
             ->add('soll', NumberType::class, [
                 'attr' => ['class' => 'form-control mb-3 autocomplete']
