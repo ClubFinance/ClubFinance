@@ -15,17 +15,56 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 class HauptbuchController extends AbstractController
 {
     /**
      * @Route("/hauptbuch", name="hauptbuch")
      */
-    public function index()
-    {
+    public function index() {
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
 
         return $this->render('hauptbuch/index.html.twig', [
             'hauptbuch' => $buchungssaetze,
+        ]);
+    }
+
+    /**
+     * @Route("/hauptbuch/export/pdf", name="hauptbuch_export_pdf")
+     */
+    public function export_pdf() {
+        $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
+
+        foreach($buchungssaetze as $satz) {
+            $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getSoll()))[0];
+            $satz->setSollT($satz->getSoll().' - '.$sql->getName());
+
+            $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getHaben()))[0];
+            $satz->setHabenT($satz->getHaben().' - '.$sql->getName());
+        }
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('isRemoteEnabled', TRUE);
+        
+        $dompdf = new Dompdf($pdfOptions);
+
+        $html = $this->renderView('hauptbuch/pdf.html.twig', [
+            'hauptbuch' => $buchungssaetze,
+        ]);
+        
+        $dompdf->loadHtml($html);
+        
+        $dompdf->setPaper('A4', 'landscape');
+
+        $dompdf->render();
+
+        $dompdf->stream(date("Y-m-d").'-Hauptbuch.pdf', [
+            "Attachment" => false
         ]);
     }
 

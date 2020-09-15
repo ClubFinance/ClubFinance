@@ -122,4 +122,29 @@ class Hauptbuch
 
         return $this;
     }
+
+    // Nicht in DB
+    public function getSollT(): ?string
+    {
+        return $this->soll;
+    }
+
+    public function setSollT(string $soll): self
+    {
+        $this->soll = $soll;
+
+        return $this;
+    }
+
+    public function getHabenT(): ?string
+    {
+        return $this->haben;
+    }
+
+    public function setHabenT(string $haben): self
+    {
+        $this->haben = $haben;
+
+        return $this;
+    }
 }

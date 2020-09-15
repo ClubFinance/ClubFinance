@@ -1,0 +1,33 @@
+<style>{% include 'hauptbuch/pdf.css' %}</style>
+<title>Hauptbuch</title>
+
+<h1 class="h3 mb-3 text-gray-800 float-left mt-2">Hauptbuch</h1>
+
+{% include 'hauptbuch/pdflogo.html' %}
+
+<table width="100%" class="table table-striped mt-5 pt-2">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Datum</th>
+            <th scope="col">SOLL</th>
+            <th scope="col">HABEN</th>
+            <th scope="col">Betrag</th>
+            <th scope="col">Beschreibung</th>
+            <th scope="col">Beleg(e)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for satz in hauptbuch %}
+            <tr>
+                <td>{{ satz.id }}</td>
+                <td>{{ satz.datum|date('d.m.Y') }}</td>
+                <td>{{ satz.sollT }}</td>
+                <td>{{ satz.habenT }}</td>
+                <td>CHF {{ ((satz.betrag)/100)|number_format(2)|replace({ ',': '.'}) }}</td>
+                <td>{{ satz.beschreibung }}</td>
+                <td>{{ satz.beleg }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
