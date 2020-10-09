@@ -77,6 +77,18 @@
                 </div>
               </div>
             </li>
+
+            <li class="nav-item {% if 'KontenplanController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfig" aria-expanded="true" aria-controls="collapseConfig">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Konfiguration</span>
+              </a>
+              <div id="collapseConfig" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item  {% if 'KontenplanController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('kontenplan') }}">Kontenplan</a>
+                </div>
+              </div>
+            </li>
 {% endif %}
 
             <!-- Divider -->

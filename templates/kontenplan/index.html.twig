@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Kontenplan{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Kontenplan</h6>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Nummer</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Name</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for konto in konti %}
+                    <tr>
+                        <td>{{ konto.id4 }}</td>
+                        <td>
+                            {% if konto.status %}
+                                <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Aktiv"><i class="fas fa-check"></i></a>
+                            {% else %}
+                                <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Inaktiv"><i class="fas fa-times"></i></a>
+                            {% endif %}
+                        </td>
+                        <td>{{ konto.name }}</td>
+                        <td>
+                            <a href="kontenplan/edit/{{ konto.id }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

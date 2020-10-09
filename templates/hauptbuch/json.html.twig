@@ -1,1 +1,1 @@
-{ {% for konto in konti %}{% if konto.id4 %}"{{konto.id4}}":"{{konto.id4}} - {{konto.name}}"{% if loop.last == false  %},{% endif%}{% endif %}{% endfor %} }
+{ {% for konto in konti %}{% if konto.id4 and konto.status %}"{{konto.id4}}":"{{konto.id4}} - {{konto.name}}",{% endif %}{% endfor %} "":""}
