@@ -3,5 +3,13 @@
 {% block pagetitle %}Erfolgsrechnung{% endblock %}
 
 {% block body %}
-Hello World!
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Bilanz per {{ stichtag.datum|date("d.m.Y") }} (abgerufen am {{ "now"|date("d.m.Y") }})</h6>
+    </div>
+    <div class="card-body">
+        {{ dump(aufwand) }}
+        {{ dump(ertrag) }}
+    </div>
+</div>
 {% endblock %}
