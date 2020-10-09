@@ -30,6 +30,7 @@
                                             <td class="text-{{ abschlussColor }}">{{ key }}</td>
                                             <td class="text-{{ abschlussColor }}">{{ value }}</td>
                                         </tr>
+                                    {% elseif value == 0  %}
                                     {% else %}
                                         <tr>
                                             <td>{{ key }}</td>
@@ -58,6 +59,7 @@
                                             <th>Summe</th>
                                             <th>{{ value }}</th>
                                         </tr>
+                                    {% elseif value == 0  %}
                                     {% else %}
                                         <tr>
                                             <td>{{ key }}</td>
