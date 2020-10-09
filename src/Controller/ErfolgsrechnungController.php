@@ -19,6 +19,7 @@ class ErfolgsrechnungController extends AbstractController
         $aufwand = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                         ->where('p.id1 = 4')->orWhere('p.id1 = 5')->orWhere('p.id1 = 6')
+                        ->andWhere('p.status != 0')
                         ->orderBy('p.id1', 'ASC')->addOrderBy('p.id2', 'ASC')->addOrderBy('p.id3', 'ASC')->addOrderBy('p.id4', 'ASC')
                         ->getQuery()->getResult();
 
@@ -32,7 +33,8 @@ class ErfolgsrechnungController extends AbstractController
 
         $ertrag = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
-                        ->where('p.id1 = 3')->orWhere('p.id1 = 7')
+                        ->where('p.id1 = 3')->orWhere('p.id1 = 7')->orWhere('p.id1 = 8')
+                        ->andWhere('p.status != 0')
                         ->orderBy('p.id1', 'ASC')->addOrderBy('p.id2', 'ASC')->addOrderBy('p.id3', 'ASC')->addOrderBy('p.id4', 'ASC')
                         ->getQuery()->getResult();
 
@@ -44,14 +46,32 @@ class ErfolgsrechnungController extends AbstractController
 
                         $et['sum'] = array_sum($et);
 
-        // Letzter Buchungssatz (für Stichdatum Bilanz)
+        if($et['sum'] > $aw['sum']) {
+            // Gewinn
+            $abschluss = 'Gewinn';
+            $abschluss_color = 'success';
+        } else {
+            // Verlust
+            $abschluss = 'Verlust';
+            $abschluss_color = 'danger';
+        }
+
+        $sum = $aw['sum'];
+        unset($aw['sum']);
+        $differenz = $et['sum'] - $sum;
+        $aw[$abschluss] = $differenz;
+        $aw['sum'] = $sum + $differenz;
+
+        // Letzter Buchungssatz (für Stichdatum Erfolgsrechnung)
         $stichtag = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'))[0];
 
 
         return $this->render('erfolgsrechnung/index.html.twig', [
-            'stichtag' => $stichtag,
             'aufwand' => $aw,
             'ertrag' => $et,
+            'abschluss' => $abschluss,
+            'abschlussColor' => $abschluss_color,
+            'stichtag' => $stichtag,
         ]);
     }
 }

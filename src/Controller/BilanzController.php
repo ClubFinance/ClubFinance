@@ -19,6 +19,7 @@ class BilanzController extends AbstractController
         $umlaufvermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                                 ->where('p.id2 = 10')->andWhere('p.id4 != 0')
+                                ->andWhere('p.status != 0')
                                 ->orderBy('p.id1', 'ASC')->addOrderBy('p.id2', 'ASC')->addOrderBy('p.id3', 'ASC')->addOrderBy('p.id4', 'ASC')
                                 ->getQuery()->getResult();
 
@@ -33,6 +34,7 @@ class BilanzController extends AbstractController
         $anlagevermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                                 ->where('p.id2 = 14')->andWhere('p.id4 != 0')
+                                ->andWhere('p.status != 0')
                                 ->orderBy('p.id1', 'ASC')->addOrderBy('p.id2', 'ASC')->addOrderBy('p.id3', 'ASC')->addOrderBy('p.id4', 'ASC')
                                 ->getQuery()->getResult();
 
@@ -47,6 +49,7 @@ class BilanzController extends AbstractController
         $fremdkapital = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                                 ->where('p.id2 = 20')->orWhere('p.id2 = 24')->andWhere('p.id4 != 0')
+                                ->andWhere('p.status != 0')
                                 ->orderBy('p.id1', 'ASC')->addOrderBy('p.id2', 'ASC')->addOrderBy('p.id3', 'ASC')->addOrderBy('p.id4', 'ASC')
                                 ->getQuery()->getResult();
 
@@ -61,6 +64,7 @@ class BilanzController extends AbstractController
         $eigenkapital = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                                 ->where('p.id2 = 28')->andWhere('p.id4 != 0')
+                                ->andWhere('p.status != 0')
                                 ->orderBy('p.id1', 'ASC')->addOrderBy('p.id2', 'ASC')->addOrderBy('p.id3', 'ASC')->addOrderBy('p.id4', 'ASC')
                                 ->getQuery()->getResult();
 

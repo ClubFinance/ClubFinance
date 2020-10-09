@@ -5,11 +5,72 @@
 {% block body %}
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Bilanz per {{ stichtag.datum|date("d.m.Y") }} (abgerufen am {{ "now"|date("d.m.Y") }})</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Erfolgsrechnung per {{ stichtag.datum|date("d.m.Y") }} (abgerufen am {{ "now"|date("d.m.Y") }})</h6>
     </div>
     <div class="card-body">
-        {{ dump(aufwand) }}
-        {{ dump(ertrag) }}
+        <div class="row">
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th colspan="2">Aufwand</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in aufwand %}
+                                    {% if key == 'sum' %}
+                                        <tr>
+                                            <th>Summe</th>
+                                            <th>{{ value }}</th>
+                                        </tr>
+                                    {% elseif (key == "Gewinn") or (key == "Verlust")  %}
+                                        <tr>
+                                            <td class="text-{{ abschlussColor }}">{{ key }}</td>
+                                            <td class="text-{{ abschlussColor }}">{{ value }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td>{{ key }}</td>
+                                            <td>{{ value }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card shadow h-100 py-2">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th colspan="2">Ertrag</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in ertrag %}
+                                    {% if key == 'sum' %}
+                                        <tr>
+                                            <th>Summe</th>
+                                            <th>{{ value }}</th>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td>{{ key }}</td>
+                                            <td>{{ value }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
