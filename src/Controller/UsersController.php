@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Plugins;
 
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,11 +31,12 @@ class UsersController extends AbstractController
     /**
      * @Route("/users", name="users")
      */
-    public function index()
+    public function index(Plugins $plugins)
     {
         $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(), array('nachname' => 'ASC'));
 
         return $this->render('users/index.html.twig', [
+            'plugins' => $plugins->get(),
             'users' => $users,
         ]);
     }
@@ -43,7 +45,7 @@ class UsersController extends AbstractController
      * @Route("/users/new", name="users_new")
      * Method({"GET", "POST"})
      */
-    public function new(Request $request) {
+    public function new(Plugins $plugins, Request $request) {
         $user = new User();
         
         $form = $this->createFormBuilder($user)
@@ -84,6 +86,7 @@ class UsersController extends AbstractController
         }
 
         return $this->render('users/new.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
         ]);
     }
@@ -92,7 +95,7 @@ class UsersController extends AbstractController
      * @Route("/users/edit/{id}", name="users_edit")
      * Method({"GET", "POST"})
      */
-    public function edit(Request $request, $id) {
+    public function edit(Plugins $plugins, Request $request, $id) {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
         $form = $this->createFormBuilder($user)
@@ -128,6 +131,7 @@ class UsersController extends AbstractController
         }
 
         return $this->render('users/edit.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
             'user' => $user,
         ]);
@@ -137,7 +141,7 @@ class UsersController extends AbstractController
      * @Route("/users/setpw/{id}", name="users_setpw")
      * Method({"GET", "POST"})
      */
-    public function setpw(Request $request, $id) {
+    public function setpw(Plugins $plugins, Request $request, $id) {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
         $form = $this->createFormBuilder($user)
@@ -171,6 +175,7 @@ class UsersController extends AbstractController
         }
 
         return $this->render('users/setpw.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
             'user' => $user,
         ]);

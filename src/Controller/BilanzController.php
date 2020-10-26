@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Plugins;
 
 use App\Entity\Kontenplan;
 use App\Entity\Hauptbuch;
@@ -15,7 +16,7 @@ class BilanzController extends AbstractController
     /**
      * @Route("/bilanz", name="bilanz")
      */
-    public function index(Kontostand $kontostand) {
+    public function index(Plugins $plugins, Kontostand $kontostand) {
         $umlaufvermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                                 ->where('p.id2 = 10')->andWhere('p.id4 != 0')
@@ -102,6 +103,7 @@ class BilanzController extends AbstractController
 
 
         return $this->render('bilanz/index.html.twig', [
+            'plugins' => $plugins->get(),
             'umlaufvermoegen' => $uv,
             'anlagevermoegen' => $av,
             'fremdkapital' => $fk,

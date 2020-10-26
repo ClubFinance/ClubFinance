@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Plugins;
 
 use App\Entity\Kontenplan;
 use App\Entity\Hauptbuch;
@@ -18,7 +19,7 @@ class KontenplanController extends AbstractController
     /**
      * @Route("/kontenplan", name="kontenplan")
      */
-    public function index()
+    public function index(Plugins $plugins)
     {
         $konti = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
@@ -27,6 +28,7 @@ class KontenplanController extends AbstractController
                         ->getQuery()->getResult();
 
         return $this->render('kontenplan/index.html.twig', [
+            'plugins' => $plugins->get(),
             'konti' => $konti,
         ]);
     }
@@ -35,7 +37,7 @@ class KontenplanController extends AbstractController
      * @Route("/kontenplan/edit/{id}", name="kontenplan_edit")
      * Method({"GET", "POST"})
      */
-    public function edit(Request $request, $id) {
+    public function edit(Plugins $plugins, Request $request, $id) {
         $konto = $this->getDoctrine()->getRepository(Kontenplan::class)->find($id);
 
         $buchungen = $this->getDoctrine()
@@ -82,6 +84,7 @@ class KontenplanController extends AbstractController
         }
 
         return $this->render('kontenplan/edit.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
             'konto' => $konto,
         ]);

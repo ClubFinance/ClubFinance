@@ -60,6 +60,22 @@
               </div>
             </li>
 
+            <li class="nav-item {% if 'PluginController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePlugins" aria-expanded="true" aria-controls="collapsePlugins">
+                <i class="fas fa-fw fa-ellipsis-h"></i>
+                <span>Plugins</span>
+              </a>
+              <div id="collapsePlugins" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  {# <a class="collapse-item  {% if 'PluginController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('bilanz') }}">Bilanz</a> #}
+                  {% for plugin in plugins %}
+                    {# <a class="collapse-item  {% if 'PluginController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path(plugin.route_name) }}">{{ plugin.name }}</a> #}
+                    <a class="collapse-item" href="{{ path(plugin.route_name) }}">{{ plugin.name }}</a>
+                  {% endfor %}
+                </div>
+              </div>
+            </li>
+
 {% if is_granted('ROLE_ADMIN') %}
             <!-- Divider -->
             <hr class="sidebar-divider">

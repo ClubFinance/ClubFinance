@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Plugins;
 
 use App\Entity\Hauptbuch;
 use App\Entity\Kontenplan;
@@ -24,10 +25,11 @@ class HauptbuchController extends AbstractController
     /**
      * @Route("/hauptbuch", name="hauptbuch")
      */
-    public function index() {
+    public function index(Plugins $plugins) {
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
 
         return $this->render('hauptbuch/index.html.twig', [
+            'plugins' => $plugins->get(),
             'hauptbuch' => $buchungssaetze,
         ]);
     }
@@ -72,7 +74,7 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch/new", name="hauptbuch_new")
      * Method({"GET", "POST"})
      */
-    public function new(Request $request) {
+    public function new(Plugins $plugins, Request $request) {
         $hauptbuch = new Hauptbuch();
         
         $form = $this->createFormBuilder($hauptbuch)
@@ -119,6 +121,7 @@ class HauptbuchController extends AbstractController
         }
 
         return $this->render('hauptbuch/new.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
         ]);
     }
@@ -127,7 +130,7 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch/edit/{id}", name="hauptbuch_edit")
      * Method({"GET", "POST"})
      */
-    public function edit(Request $request, $id) {
+    public function edit(Plugins $plugins, Request $request, $id) {
         $hauptbuch = $this->getDoctrine()->getRepository(Hauptbuch::class)->find($id);
         
         $form = $this->createFormBuilder($hauptbuch)
@@ -170,6 +173,7 @@ class HauptbuchController extends AbstractController
         }
 
         return $this->render('hauptbuch/edit.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
             'satz' => $hauptbuch,
         ]);
@@ -178,7 +182,7 @@ class HauptbuchController extends AbstractController
     /**
      * @Route("hauptbuch/delete/{id}", name="hauptbuch_delete")
      */
-    public function delete($id) {
+    public function delete(Plugins $plugins, $id) {
         $user = $this->getDoctrine()->getRepository(Hauptbuch::class)->find($id);
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -196,6 +200,7 @@ class HauptbuchController extends AbstractController
         $konti = $this->getDoctrine()->getRepository(Kontenplan::class)->createQueryBuilder('p')->where('p.id4 LIKE :word')->orWhere('p.name LIKE :word')->setParameter('word', '%'.$term.'%')->getQuery()->getResult();
 
         return $this->render('hauptbuch/json.html.twig', [
+            'plugins' => $plugins->get(),
             'konti' => $konti,
         ]);
     }

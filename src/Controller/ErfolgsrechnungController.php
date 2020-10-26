@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Plugins;
 
 use App\Entity\Kontenplan;
 use App\Entity\Hauptbuch;
@@ -15,7 +16,7 @@ class ErfolgsrechnungController extends AbstractController
     /**
      * @Route("/erfolgsrechnung", name="erfolgsrechnung")
      */
-    public function index(Kontostand $kontostand) {
+    public function index(Plugins $plugins, Kontostand $kontostand) {
         $aufwand = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                         ->where('p.id1 = 4')->orWhere('p.id1 = 5')->orWhere('p.id1 = 6')
@@ -67,6 +68,7 @@ class ErfolgsrechnungController extends AbstractController
 
 
         return $this->render('erfolgsrechnung/index.html.twig', [
+            'plugins' => $plugins->get(),
             'aufwand' => $aw,
             'ertrag' => $et,
             'abschluss' => $abschluss,

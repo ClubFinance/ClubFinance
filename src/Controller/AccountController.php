@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Plugins;
 
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ class AccountController extends AbstractController
     /**
      * @Route("/account/profil", name="account")
      */
-    public function index(Request $request) {
+    public function index(Plugins $plugins, Request $request) {
         $id = $this->getUser();
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
@@ -67,6 +68,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/index.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
             'user' => $user,
         ]);
@@ -75,7 +77,7 @@ class AccountController extends AbstractController
     /**
      * @Route("/account/passwort", name="account_passwort")
      */
-    public function pw(Request $request) {
+    public function pw(Plugins $plugins, Request $request) {
         $id = $this->getUser();
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
@@ -110,6 +112,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/pw.html.twig', [
+            'plugins' => $plugins->get(),
             'form' => $form->createView(),
             'user' => $user,
         ]);
