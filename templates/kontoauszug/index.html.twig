@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Kontoauszug{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Kontoauszug (abgerufen am {{ "now"|date("d.m.Y") }})</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-12 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Konto
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {% if konto %}
+                                        {{konto.id4}} - {{konto.name}}
+                                        <a href="{{ path('kontoauszug') }}" class="btn btn-primary btn-circle btn-sm ml-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                                    {% else %}
+                                        <select id="konto">
+                                            <option selected disabled value="0">Bitte wählen...</option>
+                                            <option disabled>----------</option>
+                                            {% for konto in konti %}
+                                                <option value="{{ konto.id4 }}">{{ konto.id4 }} - {{ konto.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if konto %}
+            <table class="table table-striped" id="kontoauszug">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Datum</th>
+                        <th scope="col">Beschreibung</th>
+                        <th scope="col">SOLL</th>
+                        <th scope="col">HABEN</th>
+                        <th scope="col">Betrag</th>
+                        <th scope="col">Beleg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for buchung in buchungen %}
+                        <tr>
+                            <td>{{ buchung.id }}</td>
+                            <td data-order="{{ buchung.datum|date('Ymd') }}">{{ buchung.datum|date('d.m.Y') }}</td>
+                            <td>{{ buchung.beschreibung }}</td>
+                            <td>{{ buchung.soll }}</td>
+                            <td>{{ buchung.haben }}</td>
+                            <td data-order="{{ buchung.betrag }}">CHF {{ ((buchung.betrag)/100)|number_format(2)|replace({ ',': '.'}) }}</td>
+                            <td>{{ buchung.beleg }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/datatables.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
+
+<script>
+    $("#konto").on('change', function() {
+        window.location.href = '{{ path('kontoauszug') }}/show/'+$(this).val();
+    });
+
+    $(document).ready( function () {
+        $('#kontoauszug').DataTable( {
+            "language": {
+                "url": "{{ asset('js/datatables_german.json') }}"
+            },
+            "order": [[1, "desc"]]
+        } );
+    } );
+</script>
+{% endblock %}

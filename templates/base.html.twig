@@ -47,13 +47,14 @@
               </a>
             </li>
 
-            <li class="nav-item {% if 'BilanzController' in app.request.attributes.get("_controller") or 'ErfolgsrechnungController' in app.request.attributes.get("_controller") %}active{% endif %}">
+            <li class="nav-item {% if 'KontoauszugController' in app.request.attributes.get("_controller") or 'BilanzController' in app.request.attributes.get("_controller") or 'ErfolgsrechnungController' in app.request.attributes.get("_controller") %}active{% endif %}">
               <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBuchhaltung" aria-expanded="true" aria-controls="collapseBuchhaltung">
                 <i class="fas fa-fw fa-hourglass-end"></i>
                 <span>Abschlüsse</span>
               </a>
               <div id="collapseBuchhaltung" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item  {% if 'KontoauszugController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('kontoauszug') }}">Kontoauszug</a>
                   <a class="collapse-item  {% if 'BilanzController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('bilanz') }}">Bilanz</a>
                   <a class="collapse-item  {% if 'ErfolgsrechnungController' in app.request.attributes.get("_controller") %}active{% endif %}" href="{{ path('erfolgsrechnung') }}">Erfolgsrechnung</a>
                 </div>

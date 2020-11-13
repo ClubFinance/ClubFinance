@@ -200,7 +200,6 @@ class HauptbuchController extends AbstractController
         $konti = $this->getDoctrine()->getRepository(Kontenplan::class)->createQueryBuilder('p')->where('p.id4 LIKE :word')->orWhere('p.name LIKE :word')->setParameter('word', '%'.$term.'%')->getQuery()->getResult();
 
         return $this->render('hauptbuch/json.html.twig', [
-            'plugins' => $plugins->get(),
             'konti' => $konti,
         ]);
     }
