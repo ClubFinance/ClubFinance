@@ -9,8 +9,6 @@ use App\Service\Plugins;
 use App\Entity\Kontenplan;
 use App\Entity\Hauptbuch;
 
-use App\Service\Kontostand;
-
 class KontoauszugController extends AbstractController
 {
     /**
