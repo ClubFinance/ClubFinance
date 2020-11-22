@@ -1,0 +1,11 @@
+<style>{% include 'pdf/pdf.css' %}</style>
+
+<title>{% block pagetitle %}Titel{% endblock %}</title>
+
+<h1 class="h3 mb-3 text-gray-800 float-left mt-2">{{ block('pagetitle') }}</h1>
+
+{% include 'pdf/pdflogo.html' %}
+
+{% block body %}
+Hello World!
+{% endblock %}

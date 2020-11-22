@@ -1,10 +1,8 @@
-<style>{% include 'hauptbuch/pdf.css' %}</style>
-<title>Hauptbuch</title>
+{% extends 'pdf.html.twig' %}
 
-<h1 class="h3 mb-3 text-gray-800 float-left mt-2">Hauptbuch</h1>
+{% block pagetitle %}Hauptbuch{% endblock %}
 
-{% include 'hauptbuch/pdflogo.html' %}
-
+{% block body %}
 <table width="100%" class="table table-striped mt-5 pt-2">
     <thead>
         <tr>
@@ -31,3 +29,4 @@
         {% endfor %}
     </tbody>
 </table>
+{% endblock %}
