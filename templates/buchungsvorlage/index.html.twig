@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Buchungsvorlage{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Buchungsvorlagen</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('buchungsvorlage_new') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neue Vorlage</span>
+        </a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Beschreibung</th>
+                    <th scope="col">Soll</th>
+                    <th scope="col">Haben</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" width="10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vorlage in vorlagen %}
+                    <tr>
+                        <td>{{ vorlage.name }}</td>
+                        <td>{{ vorlage.beschreibung }}</td>
+                        <td>{{ vorlage.soll }}</td>
+                        <td>{{ vorlage.haben }}</td>
+                        <td>
+                            {% if vorlage.status %}
+                                <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Aktiv"><i class="fas fa-check"></i></a>
+                            {% else %}
+                                <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Inaktiv"><i class="fas fa-times"></i></a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="buchungsvorlage/edit/{{ vorlage.id }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:delete_ajax('buchungsvorlage/delete/', '{{ vorlage.id }}', '{{ vorlage.name }} ({{ vorlage.soll }}/{{ vorlage.haben }})')" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

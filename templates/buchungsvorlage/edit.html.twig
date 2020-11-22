@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Buchungsvorlage{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Buchungsvorlage "{{ vorlage.name }} ({{ vorlage.soll }}/{{ vorlage.haben }})" bearbeiten</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('buchungsvorlage') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-undo-alt"></i>
+            </span>
+            <span class="text">Zurück</span>
+        </a>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {{ form_start(form, {'attr': {'id': 'form_buchungsvorlage'}}) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+    $(function() {
+        $(".autocomplete").autocomplete({
+            minLength: 1,
+            source: "/hauptbuch/konti/json",
+        });
+    });
+
+    $('#form_buchungsvorlage').submit(function() {
+        var soll = document.querySelector('#form_soll').value.split(" - ")[0];
+        document.querySelector('#form_soll').value = soll;
+        var haben = document.querySelector('#form_haben').value.split(" - ")[0];
+        document.querySelector('#form_haben').value = haben;
+        return true;
+    });
+
+    $(document).ready(function() {
+        $.getJSON( "/hauptbuch/konti/json", function(data) {
+            var soll = document.querySelector('#form_soll').value;
+            document.querySelector('#form_soll').value = data[soll];
+            var haben = document.querySelector('#form_haben').value;
+            document.querySelector('#form_haben').value = data[haben];
+        });
+    });
+</script>
+{% endblock %}

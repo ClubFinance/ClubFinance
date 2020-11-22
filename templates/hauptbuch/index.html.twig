@@ -24,6 +24,12 @@
                 </span>
                 <span class="text">Neuer Buchungssatz</span>
             </a>
+            <a href="" class="btn btn-info btn-icon-split mb-3" data-toggle="modal" data-target="#neuAusVorlage">
+                <span class="icon text-white-50">
+                    <i class="fas fa-folder-plus"></i>
+                </span>
+                <span class="text">Neu aus Vorlage</span>
+            </a>
             <a href="{{ path('hauptbuch_export_pdf') }}" target="_blank" class="btn btn-success btn-icon-split mb-3 float-right">
                 <span class="icon text-white-50">
                     <i class="fas fa-file-pdf"></i>
@@ -38,7 +44,7 @@
                     <th scope="col">Datum</th>
                     <th scope="col">SOLL</th>
                     <th scope="col">HABEN</th>
-                    <th scope="col">Betrag</th>
+                    <th scope="col">Betrag (CHF)</th>
                     <th scope="col">Beschreibung</th>
                     <th scope="col">Beleg(e)</th>
                     <th scope="col"></th>
@@ -63,6 +69,36 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="modal fade" id="neuAusVorlage" tabindex="-1" role="dialog" aria-labelledby="neuAusVorlageLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="neuAusVorlageLabel">Neuer Buchungssatz aus Vorlage</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+            <tbody>
+                {% for vorlage in vorlagen %}
+                    {% if vorlage.beschreibung %}
+                        {% set beschreibung = vorlage.beschreibung %}
+                    {% else %}
+                        {% set beschreibung = 'null' %}
+                    {% endif %}
+                    <tr><td><a href="hauptbuch/new/vorlage/{{vorlage.soll}}/{{vorlage.haben}}/{{beschreibung}}">{{ vorlage.name }} ({{vorlage.soll}}/{{vorlage.haben}})</a></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

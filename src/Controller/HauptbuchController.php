@@ -8,6 +8,7 @@ use App\Service\Plugins;
 
 use App\Entity\Hauptbuch;
 use App\Entity\Kontenplan;
+use App\Entity\Buchungsvorlage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -27,10 +28,12 @@ class HauptbuchController extends AbstractController
      */
     public function index(Plugins $plugins) {
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
+        $vorlagen = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->findBy(array('status' => true), array('name' => 'ASC'));
 
         return $this->render('hauptbuch/index.html.twig', [
             'plugins' => $plugins->get(),
             'hauptbuch' => $buchungssaetze,
+            'vorlagen' => $vorlagen,
         ]);
     }
 
@@ -89,6 +92,7 @@ class HauptbuchController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3 autocomplete']
             ])
             ->add('betrag', MoneyType::class, [
+                'label' => 'Betrag (CHF)',
                 'divisor' => 100,
                 'currency' => false,
                 'attr' => ['class' => 'form-control mb-3']
@@ -96,6 +100,70 @@ class HauptbuchController extends AbstractController
             ->add('beschreibung', TextareaType::class, [
                 'attr' => ['class' => 'form-control mb-3'],
                 'required' => false,
+            ])
+            ->add('beleg', TextType::class, [
+                'label' => 'Beleg(e)',
+                'attr' => ['class' => 'form-control mb-3'],
+                'required' => false,
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Speichern',
+                'attr' => ['class' => 'btn btn-primary mt-3'],
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() &&  $form->isValid()) {
+            $data = $form->getData();
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($data);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Der Buchungssatz wurde erfasst.');
+        }
+
+        return $this->render('hauptbuch/new.html.twig', [
+            'plugins' => $plugins->get(),
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/hauptbuch/new/vorlage/{soll}/{haben}/{beschreibung}", name="hauptbuch_new_vorlage")
+     * Method({"GET", "POST"})
+     */
+    public function newVorlage(Plugins $plugins, Request $request, $soll, $haben, $beschreibung) {
+        $hauptbuch = new Hauptbuch();
+
+        if($beschreibung == 'null') {
+            $beschreibung = '';
+        }
+        
+        $form = $this->createFormBuilder($hauptbuch)
+            ->add('datum', DateType::class, [
+                'attr' => ['class' => 'form-control mb-3'],
+                'data' => new \DateTime()
+            ])
+            ->add('soll', NumberType::class, [
+                'attr' => ['class' => 'form-control mb-3 autocomplete'],
+                'data' => $soll,
+            ])
+            ->add('haben', NumberType::class, [
+                'attr' => ['class' => 'form-control mb-3 autocomplete'],
+                'data' => $haben,
+            ])
+            ->add('betrag', MoneyType::class, [
+                'label' => 'Betrag (CHF)',
+                'divisor' => 100,
+                'currency' => false,
+                'attr' => ['class' => 'form-control mb-3']
+            ])
+            ->add('beschreibung', TextareaType::class, [
+                'attr' => ['class' => 'form-control mb-3'],
+                'required' => false,
+                'data' => $beschreibung,
             ])
             ->add('beleg', TextType::class, [
                 'label' => 'Beleg(e)',
@@ -144,6 +212,7 @@ class HauptbuchController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3 autocomplete', 'onClick' => 'this.setSelectionRange(0, this.value.length)']
             ])
             ->add('betrag', MoneyType::class, [
+                'label' => 'Betrag (CHF)',
                 'divisor' => 100,
                 'currency' => false,
                 'attr' => ['class' => 'form-control mb-3']
