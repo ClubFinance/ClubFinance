@@ -17,6 +17,7 @@ class BilanzController extends AbstractController
      * @Route("/bilanz", name="bilanz")
      */
     public function index(Plugins $plugins, Kontostand $kontostand) {
+        // -- Bilanz anzeigen
         $umlaufvermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                                 ->where('p.id2 = 10')->andWhere('p.id4 != 0')
@@ -90,6 +91,7 @@ class BilanzController extends AbstractController
             $abschluss_color = 'danger';
         }
 
+        // Gewinn/Verlust berechnen und in EK einfügen
         $sum = $ek['sum'];
         unset($ek['sum']);
         $differenz = $aktiven - $passiven;
@@ -101,7 +103,7 @@ class BilanzController extends AbstractController
         // Letzter Buchungssatz (für Stichdatum Bilanz)
         $stichtag = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'))[0];
 
-
+        // Seite ausgeben
         return $this->render('bilanz/index.html.twig', [
             'plugins' => $plugins->get(),
             'umlaufvermoegen' => $uv,
@@ -120,6 +122,7 @@ class BilanzController extends AbstractController
      * @Route("/bilanz/export/pdf", name="bilanz_export_pdf")
      */
     public function export_pdf() {
+        // -- Bilanz PDF-export
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
 
         foreach($buchungssaetze as $satz) {

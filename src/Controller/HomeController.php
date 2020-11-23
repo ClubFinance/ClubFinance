@@ -17,7 +17,8 @@ class HomeController extends AbstractController
      * @Route("/home", name="home")
      */
     public function index(Plugins $plugins, Kontostand $kontostand) {
-        // Kapitalverteilung
+        // -- Dashbboard
+        // Kapitalverteilung (Bilanz)
         $umlaufvermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                                 ->where('p.id2 = 10')->andWhere('p.id4 != 0')
@@ -27,10 +28,12 @@ class HomeController extends AbstractController
 
                                 $uv = array();
 
+                                // berechne Kontostände
                                 foreach($umlaufvermoegen as $i) {
                                     $uv[$i->getName()] = $kontostand->get($i->getId4(),$this->getDoctrine());
                                 }
 
+                                // Summe der Konti
                                 $uv['sum'] = array_sum($uv);
 
         $anlagevermoegen = $this->getDoctrine()
@@ -42,10 +45,12 @@ class HomeController extends AbstractController
 
                                 $av = array();
 
+                                // berechne Kontostände
                                 foreach($anlagevermoegen as $i) {
                                     $av[$i->getName()] = $kontostand->get($i->getId4(),$this->getDoctrine());
                                 }
 
+                                // Summe der Konti
                                 $av['sum'] = array_sum($av);
 
         $fremdkapital = $this->getDoctrine()
@@ -57,10 +62,12 @@ class HomeController extends AbstractController
 
                                 $fk = array();
 
+                                // berechne Kontostände
                                 foreach($fremdkapital as $i) {
                                     $fk[$i->getName()] = $kontostand->get($i->getId4(),$this->getDoctrine());
                                 }
 
+                                // Summe der Konti
                                 $fk['sum'] = array_sum($fk);
 
         $eigenkapital = $this->getDoctrine()
@@ -72,10 +79,12 @@ class HomeController extends AbstractController
 
                                 $ek = array();
 
+                                // berechne Kontostände
                                 foreach($eigenkapital as $i) {
                                     $ek[$i->getName()] = $kontostand->get($i->getId4(),$this->getDoctrine());
                                 }
 
+                                // Summe der Konti
                                 $ek['sum'] = array_sum($ek);
 
         // Erfolgsrechnung
@@ -88,10 +97,12 @@ class HomeController extends AbstractController
 
                         $aw = array();
 
+                        // berechne Kontostände
                         foreach($aufwand as $i) {
                             $aw[$i->getName()] = $kontostand->get($i->getId4(),$this->getDoctrine());
                         }
 
+                        // Summe der Konti
                         $aw['sum'] = array_sum($aw);
 
         $ertrag = $this->getDoctrine()
@@ -103,10 +114,12 @@ class HomeController extends AbstractController
 
                         $et = array();
 
+                        // berechne Kontostände
                         foreach($ertrag as $i) {
                             $et[$i->getName()] = $kontostand->get($i->getId4(),$this->getDoctrine());
                         }
 
+                        // Summe der Konti
                         $et['sum'] = array_sum($et);
 
         // Gewinn/Verlust
@@ -127,6 +140,7 @@ class HomeController extends AbstractController
             $abschluss_color_hex_hover = '#b5392d';
         }
 
+        // Gewinn/Verlust berechnen
         $differenz = $aktiven - $passiven;
 
         // Ausgabe Seite
@@ -150,6 +164,7 @@ class HomeController extends AbstractController
      * @Route("/", name="home_forward")
      */
     public function index_forward() {
+        // Weiterleitung auf Dashboard wenn keine Seite definiert
         return $this->redirectToRoute('home');
     }
 }

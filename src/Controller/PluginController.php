@@ -12,9 +12,10 @@ use App\Entity\Hauptbuch;
 class PluginController extends AbstractController
 {
     /**
-     * @Route("/plugin/demo", name="demo_plugin")
+     * @Route("/plugin/demo", name="plugin_demo")
      */
     public function index(Plugins $plugins) {
+        // -- Vorlage für Plugins
         return $this->render('plugin/demo.html.twig', [
             'plugins' => $plugins->get(),
         ]);

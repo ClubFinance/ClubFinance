@@ -20,8 +20,11 @@ class BuchungsvorlageController extends AbstractController
      * @Route("/buchungsvorlage", name="buchungsvorlage")
      */
     public function index(Plugins $plugins) {
+        // -- Buchungsvorlagen anzeigen
+        // aus DB laden
         $vorlagen = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->findAll();
 
+        // Seite ausgeben
         return $this->render('buchungsvorlage/index.html.twig', [
             'plugins' => $plugins->get(),
             'vorlagen' => $vorlagen,
@@ -33,8 +36,10 @@ class BuchungsvorlageController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function new(Plugins $plugins, Request $request) {
+        // -- Neue Buchungsvorlage
         $vorlage = new Buchungsvorlage();
         
+        // Formular
         $form = $this->createFormBuilder($vorlage)
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'form-control mb-3']
@@ -62,6 +67,7 @@ class BuchungsvorlageController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() &&  $form->isValid()) {
             $data = $form->getData();
 
@@ -69,9 +75,11 @@ class BuchungsvorlageController extends AbstractController
             $entityManager->persist($data);
             $entityManager->flush();
 
+            // Bestätigung
             $this->addFlash('success', 'Die Buchungsvorlage wurde erfolgreich gespeichert.');
         }
 
+        // Seite ausgeben
         return $this->render('buchungsvorlage/new.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -83,8 +91,11 @@ class BuchungsvorlageController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        // -- Buchungsvorlage bearbeiten
+        // aus DB laden
         $vorlage = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->find($id);
         
+        // Formular
         $form = $this->createFormBuilder($vorlage)
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'form-control mb-3']
@@ -111,13 +122,16 @@ class BuchungsvorlageController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
+            // Bestätigung
             $this->addFlash('success', 'Die Buchungsvorlage wurde erfolgreich gespeichert.');
         }
 
+        // Seite ausgeben
         return $this->render('buchungsvorlage/edit.html.twig', [
             'plugins' => $plugins->get(),
             'vorlage' => $vorlage,
@@ -129,12 +143,16 @@ class BuchungsvorlageController extends AbstractController
      * @Route("buchungsvorlage/delete/{id}", name="buchungsvorlage_delete")
      */
     public function delete(Plugins $plugins, $id) {
+        // -- Buchungsvorlage löschen
+        // aus DB laden
         $vorlage = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->find($id);
 
+        // löschen
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($vorlage);
         $entityManager->flush();
 
+        // Weiterleitung
         return $this->redirectToRoute('buchungsvorlage');
     }
 }

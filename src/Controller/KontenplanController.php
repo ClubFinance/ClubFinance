@@ -19,14 +19,16 @@ class KontenplanController extends AbstractController
     /**
      * @Route("/kontenplan", name="kontenplan")
      */
-    public function index(Plugins $plugins)
-    {
+    public function index(Plugins $plugins) {
+        // -- Kontenplan anzeigen
+        // aus DB auslesen
         $konti = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                         ->where('p.id4 IS NOT NULL')
                         ->orderBy('p.id1', 'ASC')->addOrderBy('p.id2', 'ASC')->addOrderBy('p.id3', 'ASC')->addOrderBy('p.id4', 'ASC')
                         ->getQuery()->getResult();
 
+        // Seite ausgeben
         return $this->render('kontenplan/index.html.twig', [
             'plugins' => $plugins->get(),
             'konti' => $konti,
@@ -38,8 +40,11 @@ class KontenplanController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        // -- Konto bearbeiten
+        // aus DB auslesen
         $konto = $this->getDoctrine()->getRepository(Kontenplan::class)->find($id);
 
+        // Überprüfe, ob Buchungen auf Konto vorhanden sind
         $buchungen = $this->getDoctrine()
                             ->getRepository(Hauptbuch::class)->createQueryBuilder('p')
                             ->where('p.soll = '.$konto->getId4())->orWhere('p.haben = '.$konto->getId4())
@@ -53,6 +58,7 @@ class KontenplanController extends AbstractController
             $statusDisabled = false;
         }
         
+        // Formular
         $form = $this->createFormBuilder($konto)
             ->add('id4', NumberType::class, [
                 'label' => 'Nummer',
@@ -76,13 +82,16 @@ class KontenplanController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
+            // Bestätigung
             $this->addFlash('success', 'Das Konto wurde erfolgreich gespeichert.');
         }
 
+        // Seite ausgeben
         return $this->render('kontenplan/edit.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),

@@ -17,6 +17,7 @@ class ErfolgsrechnungController extends AbstractController
      * @Route("/erfolgsrechnung", name="erfolgsrechnung")
      */
     public function index(Plugins $plugins, Kontostand $kontostand) {
+        // -- ER anzeigen
         $aufwand = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                         ->where('p.id1 = 4')->orWhere('p.id1 = 5')->orWhere('p.id1 = 6')
@@ -57,6 +58,7 @@ class ErfolgsrechnungController extends AbstractController
             $abschluss_color = 'danger';
         }
 
+        // Gewinn/Verlust berechnen und bei Ertrag einfügen
         $sum = $aw['sum'];
         unset($aw['sum']);
         $differenz = $et['sum'] - $sum;
@@ -66,7 +68,7 @@ class ErfolgsrechnungController extends AbstractController
         // Letzter Buchungssatz (für Stichdatum Erfolgsrechnung)
         $stichtag = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'))[0];
 
-
+        // Seite ausgeben
         return $this->render('erfolgsrechnung/index.html.twig', [
             'plugins' => $plugins->get(),
             'aufwand' => $aw,

@@ -24,7 +24,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-{{ abschlussColor }} text-uppercase mb-1">Gewinn</div>
+                        <div class="text-xs font-weight-bold text-{{ abschlussColor }} text-uppercase mb-1">{{ abschluss }}</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">CHF {{ abschlussNum|abs|number_format(2)|replace({ ',': '.'}) }}</div>
                     </div>
                     <div class="col-auto">

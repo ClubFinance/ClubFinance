@@ -31,10 +31,11 @@ class UsersController extends AbstractController
     /**
      * @Route("/users", name="users")
      */
-    public function index(Plugins $plugins)
-    {
+    public function index(Plugins $plugins) {
+        // -- Nutzer aus DB laden
         $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(), array('nachname' => 'ASC'));
 
+        // Seite laden
         return $this->render('users/index.html.twig', [
             'plugins' => $plugins->get(),
             'users' => $users,
@@ -46,8 +47,10 @@ class UsersController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function new(Plugins $plugins, Request $request) {
+        // -- Neuen Nutzer erstellen
         $user = new User();
         
+        // Formular
         $form = $this->createFormBuilder($user)
             ->add('vorname', TextType::class, [
                 'attr' => ['class' => 'form-control mb-3']
@@ -70,10 +73,14 @@ class UsersController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() &&  $form->isValid()) {
             $data = $form->getData();
 
+            // Rolle (Standardbenutzer) eintragen
             $data->setRoles(array("ROLE_USER"));
+
+            // Passwort verschlüsseln
             $data->setPassword($this->passwordEncoder->encodePassword(
                 $data,$data->getPassword()
             ));
@@ -82,10 +89,11 @@ class UsersController extends AbstractController
             $entityManager->persist($data);
             $entityManager->flush();
 
-            // return $this->redirectToRoute('users');
+            // Bestätigung
             $this->addFlash('success', 'Der Nutzer wurde erfolgreich angelegt.');
         }
 
+        // Seite ausgeben
         return $this->render('users/new.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -97,8 +105,11 @@ class UsersController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        // -- Nutzer bearbeiten
+        // aus DB laden
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
+        // Formular
         $form = $this->createFormBuilder($user)
             ->add('vorname', TextType::class, [
                 'attr' => ['class' => 'form-control mb-3']
@@ -123,14 +134,16 @@ class UsersController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() &&  $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            // return $this->redirectToRoute('users');
+            // Bestätigung
             $this->addFlash('success', 'Das Profil wurde erfolgreich gespeichert.');
         }
 
+        // Seite ausgeben
         return $this->render('users/edit.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -143,8 +156,11 @@ class UsersController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function setpw(Plugins $plugins, Request $request, $id) {
+        // -- Passwort für Nutzer setzen
+        // aus DB laden
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
+        // Formular
         $form = $this->createFormBuilder($user)
             ->add('email', EmailType::class, [
                 'attr' => ['class' => 'form-control mb-3'],
@@ -162,8 +178,11 @@ class UsersController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() &&  $form->isValid()) {
             $data = $form->getData();
+
+            // Passwort verschlüsseln
             $data->setPassword($this->passwordEncoder->encodePassword(
                 $data,$data->getPassword()
             ));
@@ -171,10 +190,11 @@ class UsersController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            // return $this->redirectToRoute('users');
+            // Bestätigung
             $this->addFlash('success', 'Das Passwort wurde erfolgreich gesetzt.');
         }
 
+        // Seite ausgeben
         return $this->render('users/setpw.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -186,12 +206,14 @@ class UsersController extends AbstractController
      * @Route("users/delete/{id}", name="users_delete")
      */
     public function delete($id) {
+        // Benutzer löschen
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);
         $entityManager->flush();
 
+        // Weiterleitung
         return $this->redirectToRoute('users');
     }
 }

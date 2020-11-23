@@ -31,9 +31,12 @@ class AccountController extends AbstractController
      * @Route("/account/profil", name="account")
      */
     public function index(Plugins $plugins, Request $request) {
+        // -- Formular für Bearbeitung des eigenen Profils
+        // User aus DB laden
         $id = $this->getUser();
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
+        // Formular
         $form = $this->createFormBuilder($user)
             ->add('vorname', TextType::class, [
                 'attr' => ['class' => 'form-control mb-3']
@@ -57,16 +60,18 @@ class AccountController extends AbstractController
             ])
             ->getForm();
 
+        // Submit
         $form->handleRequest($request);
 
         if($form->isSubmitted() &&  $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            // return $this->redirectToRoute('account');
+            // Bestätigung
             $this->addFlash('success', 'Das Profil wurde erfolgreich gespeichert.');
         }
 
+        // Seite laden
         return $this->render('account/index.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -78,9 +83,12 @@ class AccountController extends AbstractController
      * @Route("/account/passwort", name="account_passwort")
      */
     public function pw(Plugins $plugins, Request $request) {
+        // -- Formular für Passwortänderung
+        // User aus DB laden
         $id = $this->getUser();
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
+        // Formular
         $form = $this->createFormBuilder($user)
             ->add('email', EmailType::class, [
                 'attr' => ['class' => 'form-control mb-3'],
@@ -96,6 +104,7 @@ class AccountController extends AbstractController
             ])
             ->getForm();
 
+        // Submit
         $form->handleRequest($request);
 
         if($form->isSubmitted() &&  $form->isValid()) {
@@ -107,10 +116,11 @@ class AccountController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            // return $this->redirectToRoute('account_passwort');
+            // Bestätigung
             $this->addFlash('success', 'Das Passwort wurde erfolgreich geändert.');
         }
 
+        // Seite laden
         return $this->render('account/pw.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),

@@ -32,9 +32,14 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch", name="hauptbuch")
      */
     public function index(Plugins $plugins) {
+        // -- Hauptbuch anzeigen
+        // Buchungssätze aus DB
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
+
+        // Buchungsvorlagen aus DB
         $vorlagen = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->findBy(array('status' => true), array('name' => 'ASC'));
 
+        // Seite ausgeben
         return $this->render('hauptbuch/index.html.twig', [
             'plugins' => $plugins->get(),
             'hauptbuch' => $buchungssaetze,
@@ -46,8 +51,11 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch/export/pdf/{orderby}/{order}", name="hauptbuch_export_pdf")
      */
     public function export_pdf($orderby, $order) {
+        // -- Hauptbuch als PDF exportieren
+        // Buchungssätze aus DB
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array($orderby => $order));
 
+        // Kontonamen aus DB laden (werden in Hauptbuch nur Kontonummern gespeichert)
         foreach($buchungssaetze as $satz) {
             $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getSoll()))[0];
             $satz->setSollT($satz->getSoll().' - '.$sql->getName());
@@ -63,6 +71,7 @@ class HauptbuchController extends AbstractController
         
         $dompdf = new Dompdf($pdfOptions);
 
+        // PDF Design
         $html = $this->renderView('hauptbuch/pdf.html.twig', [
             'hauptbuch' => $buchungssaetze,
         ]);
@@ -73,6 +82,7 @@ class HauptbuchController extends AbstractController
 
         $dompdf->render();
 
+        // Ausgabe PDF
         $dompdf->stream(date("Y-m-d").'-Hauptbuch.pdf', [
             "Attachment" => false
         ]);
@@ -82,19 +92,32 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch/export/xlsx", name="hauptbuch_export_xlsx")
      */
     public function export_xlsx() {
+        // -- Hauptbuch als XLSX (Excel) exportieren
+        // Buchungssätze aus DB
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
 
-        // Definiere Headline
-        $header = array("ID", "Datum", "Soll", "Haben", "Beschreibung", "Betrag", "Beleg");
+        // Kontonamen aus DB laden (werden in Hauptbuch nur Kontonummern gespeichert)
+        foreach($buchungssaetze as $satz) {
+            $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getSoll()))[0];
+            $satz->setSollT($satz->getSoll().' - '.$sql->getName());
+
+            $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getHaben()))[0];
+            $satz->setHabenT($satz->getHaben().' - '.$sql->getName());
+        }
+
+        // Definiere Headline in Excel-File
+        $header = array("ID", "Datum", "Soll", "Soll-Kontoname", "Haben", "Haben-Kontoname", "Beschreibung", "Betrag", "Beleg");
         $data = array($header);
 
         foreach($buchungssaetze as $satz) {
-            // definiere Felder
+            // definiere Spalten
             $array = array(
                 $satz->getId(),
                 $satz->getDatum(),
-                $satz->getSoll(),
-                $satz->getHaben(),
+                explode(" - ",$satz->getSollT())[0],
+                explode(" - ",$satz->getSollT())[1],
+                explode(" - ",$satz->getHabenT())[0],
+                explode(" - ",$satz->getHabenT())[1],
                 $satz->getBeschreibung(),
                 $satz->getBetrag()/100,
                 $satz->getBeleg()
@@ -128,8 +151,10 @@ class HauptbuchController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function new(Plugins $plugins, Request $request) {
+        // -- Neuer Buchungssatz
         $hauptbuch = new Hauptbuch();
         
+        // Formular
         $form = $this->createFormBuilder($hauptbuch)
             ->add('datum', DateType::class, [
                 'attr' => ['class' => 'form-control mb-3'],
@@ -164,6 +189,7 @@ class HauptbuchController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() &&  $form->isValid()) {
             $data = $form->getData();
 
@@ -171,9 +197,11 @@ class HauptbuchController extends AbstractController
             $entityManager->persist($data);
             $entityManager->flush();
 
+            // BBestätigung
             $this->addFlash('success', 'Der Buchungssatz wurde erfasst.');
         }
 
+        // Seite laden
         return $this->render('hauptbuch/new.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -185,12 +213,15 @@ class HauptbuchController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function newVorlage(Plugins $plugins, Request $request, $soll, $haben, $beschreibung) {
+        // -- Neuer Buchungssatz aus Buchungsvorlage
         $hauptbuch = new Hauptbuch();
 
+        // Definition leere Beschreibung
         if($beschreibung == 'null') {
             $beschreibung = '';
         }
         
+        // Formular
         $form = $this->createFormBuilder($hauptbuch)
             ->add('datum', DateType::class, [
                 'attr' => ['class' => 'form-control mb-3'],
@@ -228,6 +259,7 @@ class HauptbuchController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() &&  $form->isValid()) {
             $data = $form->getData();
 
@@ -235,9 +267,11 @@ class HauptbuchController extends AbstractController
             $entityManager->persist($data);
             $entityManager->flush();
 
+            // Bestätigung
             $this->addFlash('success', 'Der Buchungssatz wurde erfasst.');
         }
 
+        // Seite ausgeben
         return $this->render('hauptbuch/new.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -249,8 +283,11 @@ class HauptbuchController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        // -- Buchungssatz bearbeiten
+        // aus DB laden
         $hauptbuch = $this->getDoctrine()->getRepository(Hauptbuch::class)->find($id);
         
+        // Formular
         $form = $this->createFormBuilder($hauptbuch)
             ->add('datum', DateType::class, [
                 'attr' => ['class' => 'form-control mb-3']
@@ -284,13 +321,16 @@ class HauptbuchController extends AbstractController
 
         $form->handleRequest($request);
 
+        // Submit
         if($form->isSubmitted() &&  $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
+            // Bestätigung
             $this->addFlash('success', 'Der Buchungssatz wurde erfolgreich gespeichert.');
         }
 
+        // Seite laden
         return $this->render('hauptbuch/edit.html.twig', [
             'plugins' => $plugins->get(),
             'form' => $form->createView(),
@@ -302,12 +342,14 @@ class HauptbuchController extends AbstractController
      * @Route("hauptbuch/delete/{id}", name="hauptbuch_delete")
      */
     public function delete(Plugins $plugins, $id) {
-        $user = $this->getDoctrine()->getRepository(Hauptbuch::class)->find($id);
+        // Buchungssatz löschen
+        $buchungssatz = $this->getDoctrine()->getRepository(Hauptbuch::class)->find($id);
 
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($user);
+        $entityManager->remove($buchungssatz);
         $entityManager->flush();
 
+        // Weiterleitung
         return $this->redirectToRoute('hauptbuch');
     }
 
@@ -315,9 +357,14 @@ class HauptbuchController extends AbstractController
      * @Route("hauptbuch/konti/json", name="hauptbuch_konti")
      */
     public function konti_json(Request $request) {
+        // -- Konti als JSON ausgeben für asynchrone Abfragen (AJAX)
+        // Definition Suchterm
         $term = $request->query->get('term');
+
+        // Suche nach Term in DB
         $konti = $this->getDoctrine()->getRepository(Kontenplan::class)->createQueryBuilder('p')->where('p.id4 LIKE :word')->orWhere('p.name LIKE :word')->setParameter('word', '%'.$term.'%')->getQuery()->getResult();
 
+        // Ausgabe JSON
         return $this->render('hauptbuch/json.html.twig', [
             'konti' => $konti,
         ]);
