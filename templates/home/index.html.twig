@@ -3,5 +3,149 @@
 {% block pagetitle %}Dashboard{% endblock %}
 
 {% block body %}
-Hello World!
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Liquide Mittel</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">CHF {{ uv.sum|number_format(2)|replace({ ',': '.'}) }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-coins fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-{{ abschlussColor }} shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-{{ abschlussColor }} text-uppercase mb-1">Gewinn</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">CHF {{ abschlussNum|abs|number_format(2)|replace({ ',': '.'}) }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-receipt fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {# Kapitalverteilung #}
+    <div class="col-xl-6 col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Kapitalverteilung (Bilanz)</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                    <canvas id="kapitalverteilung" width="822" height="490" class="chartjs-render-monitor" style="display: block; height: 245px; width: 411px;"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2"><i class="fas fa-circle text-primary"></i> UV</span>
+                    <span class="mr-2"><i class="fas fa-circle text-info"></i> AV</span>
+                    <span class="mr-2"><i class="fas fa-circle text-{{ abschlussColor }}"></i> {{ abschluss }}</span>
+                    <span class="mr-2"><i class="fas fa-circle text-dark"></i> FK</span>
+                    <span class="mr-2"><i class="fas fa-circle text-secondary"></i> EK</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Erfolgsrechnung #}
+    <div class="col-xl-6 col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Erfolgsrechnung</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                    <canvas id="erfolgsrechnung" width="822" height="490" class="chartjs-render-monitor" style="display: block; height: 245px; width: 411px;"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2"><i class="fas fa-circle text-primary"></i> Aufwand</span>
+                    <span class="mr-2"><i class="fas fa-circle text-{{ abschlussColor }}"></i> {{ abschluss }}</span>
+                    <span class="mr-2"><i class="fas fa-circle text-info"></i> Ertrag</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script>
+Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#858796';
+
+// Kapitalverteilung
+var ctx = document.getElementById("kapitalverteilung");
+var kapitalverteilung = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: ["Fremdkapital", "Eigenkapital", "{{ abschluss }}", "Anlagevermögen", "Umlaufvermögen"],
+    datasets: [{
+      data: [{{ fk.sum }}, {{ ek.sum }}, {{ abschlussNum|abs }}, {{ av.sum }}, {{ uv.sum }}],
+      backgroundColor: ['#5a5c69', '#858796', '{{ abschlussColorHex }}', '#36b9cc', '#4e73df'],
+      hoverBackgroundColor: ['#41434d', '#636470', '{{ abschlussColorHexHover }}', '#298f9e', '#3f5db5'],
+      hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+    },
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+  },
+});
+
+// Erfolgsrechnung
+var ctx = document.getElementById("erfolgsrechnung");
+var erfolgsrechnung = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: ["Ertrag", "{{ abschluss }}", "Aufwand"],
+    datasets: [{
+      data: [{{ et.sum }}, {{ abschlussNum|abs }}, {{ aw.sum }}],
+      backgroundColor: ['#36b9cc', '{{ abschlussColorHex }}', '#4e73df'],
+      hoverBackgroundColor: ['#298f9e', '{{ abschlussColorHexHover }}', '#3f5db5'],
+      hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+    },
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+  },
+});
+</script>
 {% endblock %}
