@@ -79,7 +79,7 @@
 {% endblock %}
 
 {% block javascripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="{{ asset('js/chart.min.js') }}"></script>
 <script>
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
@@ -124,8 +124,8 @@ var erfolgsrechnung = new Chart(ctx, {
     labels: ["Ertrag", "{{ abschluss }}", "Aufwand"],
     datasets: [{
       data: [{{ et.sum }}, {{ abschlussNum|abs }}, {{ aw.sum }}],
-      backgroundColor: ['#36b9cc', '{{ abschlussColorHex }}', '#4e73df'],
-      hoverBackgroundColor: ['#298f9e', '{{ abschlussColorHexHover }}', '#3f5db5'],
+      backgroundColor: ['#5a5c69', '{{ abschlussColorHex }}', '#4e73df'],
+      hoverBackgroundColor: ['#41434d', '{{ abschlussColorHexHover }}', '#3f5db5'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },

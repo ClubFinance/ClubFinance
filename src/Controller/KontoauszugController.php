@@ -11,6 +11,10 @@ use App\Entity\Hauptbuch;
 
 use App\Service\Kontostand;
 
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 class KontoauszugController extends AbstractController
 {
     /**
@@ -60,6 +64,52 @@ class KontoauszugController extends AbstractController
             'konti' => $konti,
             'buchungen' => $buchungen,
             'saldo' => $saldo,
+        ]);
+    }
+
+    /**
+     * @Route("/kontoauszug/export/pdf/{id4}/{orderby}/{order}", name="kontoauszug_export_pdf")
+     */
+    public function export_pdf(Kontostand $kontostand, $id4, $orderby, $order) {
+        $konto = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array('id4' => $id4))[0];
+
+        $buchungen = $this->getDoctrine()
+                        ->getRepository(Hauptbuch::class)->createQueryBuilder('p')
+                        ->where('p.soll = '.$id4)->orWhere('p.haben = '.$id4)
+                        ->orderBy('p.'.$orderby, $order)
+                        ->getQuery()->getResult();
+
+        foreach($buchungen as $satz) {
+            $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getSoll()))[0];
+            $satz->setSollT($satz->getSoll().' - '.$sql->getName());
+
+            $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getHaben()))[0];
+            $satz->setHabenT($satz->getHaben().' - '.$sql->getName());
+        }
+
+        $saldo = $kontostand->get($id4,$this->getDoctrine());
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('isRemoteEnabled', TRUE);
+        
+        $dompdf = new Dompdf($pdfOptions);
+
+        $html = $this->renderView('kontoauszug/pdf.html.twig', [
+            'konto' => $konto,
+            'buchungen' => $buchungen,
+            'saldo' => $saldo,
+        ]);
+        
+        $dompdf->loadHtml($html);
+        
+        $dompdf->setPaper('A4', 'landscape');
+
+        $dompdf->render();
+
+        $dompdf->stream(date("Y-m-d").'-Kontenplan-'.$konto->getId4().'.pdf', [
+            "Attachment" => false
         ]);
     }
 }

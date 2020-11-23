@@ -1,0 +1,43 @@
+{% extends 'pdf.html.twig' %}
+
+{% block pagetitle %}Kontoauszug - {{ konto.id4 }} {{ konto.name }}{% endblock %}
+
+{% block body %}
+<table width="100%" class="table table-striped mt-5 pt-2">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Datum</th>
+            <th scope="col">Beschreibung</th>
+            <th scope="col">SOLL</th>
+            <th scope="col">HABEN</th>
+            <th scope="col">Betrag</th>
+            <th scope="col">Beleg(e)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for buchung in buchungen %}
+            <tr>
+                <td>{{ buchung.id }}</td>
+                <td>{{ buchung.datum|date('d.m.Y') }}</td>
+                <td>{{ buchung.beschreibung }}</td>
+                <td>{{ buchung.sollT }}</td>
+                <td>{{ buchung.habenT }}</td>
+                <td>CHF {{ ((buchung.betrag)/100)|number_format(2)|replace({ ',': '.'}) }}</td>
+                <td>{{ buchung.beleg }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th></th>
+            <th>{{ 'now'|date('d.m.Y') }}</th>
+            <th>Saldo</th>
+            <th></th>
+            <th></th>
+            <th>CHF {{ saldo|number_format(2)|replace({ ',': '.'}) }}</th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
+{% endblock %}

@@ -43,10 +43,10 @@ class HauptbuchController extends AbstractController
     }
 
     /**
-     * @Route("/hauptbuch/export/pdf", name="hauptbuch_export_pdf")
+     * @Route("/hauptbuch/export/pdf/{orderby}/{order}", name="hauptbuch_export_pdf")
      */
-    public function export_pdf() {
-        $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
+    public function export_pdf($orderby, $order) {
+        $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array($orderby => $order));
 
         foreach($buchungssaetze as $satz) {
             $sql = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array("id4" => $satz->getSoll()))[0];

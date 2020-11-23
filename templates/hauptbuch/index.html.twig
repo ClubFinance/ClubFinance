@@ -30,7 +30,8 @@
                 </span>
                 <span class="text">Neu aus Vorlage</span>
             </a>
-            <a href="{{ path('hauptbuch_export_pdf') }}" target="_blank" class="btn btn-success btn-icon-split mb-3 float-right">
+            {# <a href="{{ path('hauptbuch_export_pdf') }}" target="_blank" class="btn btn-success btn-icon-split mb-3 float-right"> #}
+            <a href="" target="_blank" class="btn btn-success btn-icon-split mb-3 float-right" data-toggle="modal" data-target="#PDFmodal">
                 <span class="icon text-white-50">
                     <i class="fas fa-file-pdf"></i>
                 </span>
@@ -106,6 +107,38 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="PDFmodal" tabindex="-1" role="dialog" aria-labelledby="PDFmodalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="PDFmodalLabel">PDF exportieren</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">Sortieren nach:
+        <select id="orderby" class="ml-2">
+            <option value="id">ID</option>
+            <option value="datum" selected>Datum</option>
+            <option value="soll">Soll</option>
+            <option value="haben">Haben</option>
+            <option value="betrag">Betrag</option>
+            <option value="beschreibung">Beschreibung</option>
+            <option value="beleg">Beleg</option>
+        </select>
+        <select id="order" class="ml-2">
+            <option value="ASC" selected>A - Z</option>
+            <option value="DESC">Z - A</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-primary" onClick="generatePDF()">Exportieren</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -121,5 +154,10 @@ $(document).ready( function () {
         "order": [[1, "desc"]]
     } );
 } );
+
+function generatePDF() {
+    var url = 'hauptbuch/export/pdf/'+$('select#orderby').val()+'/'+$('select#order').val();
+    window.open(url);
+}
 </script>
 {% endblock %}
