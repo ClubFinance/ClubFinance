@@ -14,9 +14,7 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Konto
-                                </div>
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Konto</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
                                     {% if konto %}
                                         {{konto.id4}} - {{konto.name}}
@@ -43,11 +41,17 @@
         {% if konto %}
             <p>
                 <a href="" target="_blank" class="btn btn-success btn-icon-split mb-3 float-right" data-toggle="modal" data-target="#PDFmodal">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-file-pdf"></i>
-                    </span>
-                    <span class="text">PDF</span>
+                <span class="icon text-white-50">
+                    <i class="fas fa-file-pdf"></i>
+                </span>
+                <span class="text">PDF</span>
                 </a>
+                <a href="/kontoauszug/export/xlsx/{{ konto.id4 }}" target="_blank" class="btn btn-success btn-icon-split mb-3 mr-2 float-right">
+                <span class="icon text-white-50">
+                    <i class="fas fa-file-excel"></i>
+                </span>
+                <span class="text">Excel</span>
+            </a>
             </p>
             <div class="mt-5">
                 <table class="table table-striped" id="kontoauszug">
@@ -91,6 +95,7 @@
         {% endif %}
     </div>
 </div>
+{% if konto %}
 <div class="modal fade" id="PDFmodal" tabindex="-1" role="dialog" aria-labelledby="PDFmodalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -122,6 +127,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block javascripts %}
@@ -142,9 +148,11 @@ $(document).ready( function () {
     } );
 } );
 
+{% if konto %}
 function generatePDF() {
     var url = '/kontoauszug/export/pdf/'+{{ konto.id4 }}+'/'+$('select#orderby').val()+'/'+$('select#order').val();
     window.open(url);
 }
+{% endif %}
 </script>
 {% endblock %}

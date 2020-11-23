@@ -15,6 +15,11 @@ use App\Service\Kontostand;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
+// Include PhpSpreadsheet required namespaces
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class KontoauszugController extends AbstractController
 {
     /**
@@ -108,8 +113,59 @@ class KontoauszugController extends AbstractController
 
         $dompdf->render();
 
-        $dompdf->stream(date("Y-m-d").'-Kontenplan-'.$konto->getId4().'.pdf', [
+        $dompdf->stream(date("Y-m-d").'-Kontoauszug-'.$konto->getId4().'.pdf', [
             "Attachment" => false
         ]);
+    }
+
+    /**
+     * @Route("/kontoauszug/export/xlsx/{id4}", name="kontoauszug_export_xlsx")
+     */
+    public function export_xlsx($id4) {
+        $konto = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array('id4' => $id4))[0];
+
+        $buchungen = $this->getDoctrine()
+                        ->getRepository(Hauptbuch::class)->createQueryBuilder('p')
+                        ->where('p.soll = '.$id4)->orWhere('p.haben = '.$id4)
+                        ->orderBy('p.datum', 'ASC')
+                        ->getQuery()->getResult();
+
+        // Definiere Headline
+        $header = array("ID", "Datum", "Beschreibung", "Soll", "Haben", "Betrag", "Beleg");
+        $data = array($header);
+
+        foreach($buchungen as $satz) {
+            // definiere Felder
+            $array = array(
+                $satz->getId(),
+                $satz->getDatum(),
+                $satz->getBeschreibung(),
+                $satz->getSoll(),
+                $satz->getHaben(),
+                $satz->getBetrag()/100,
+                $satz->getBeleg()
+            );
+            $data[] = $array;
+        }
+
+        $spreadsheet = new Spreadsheet();
+        
+        /* @var $sheet \PhpOffice\PhpSpreadsheet\Writer\Xlsx\Worksheet */
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->fromArray($data, null, 'A1');
+        $sheet->setTitle("Kontoauszug ".$konto->getId4());
+        
+        // Create your Office 2007 Excel (XLSX Format)
+        $writer = new Xlsx($spreadsheet);
+        
+        // Create a Temporary file in the system
+        $fileName = date("Y-m-d").'-Kontoauszug-'.$konto->getId4().'.xlsx';
+        $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+        
+        // Create the excel file in the tmp directory of the system
+        $writer->save($temp_file);
+        
+        // Return the excel file as an attachment
+        return $this->file($temp_file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }
