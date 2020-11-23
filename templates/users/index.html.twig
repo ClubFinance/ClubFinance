@@ -20,7 +20,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">E-Mail</th>
                     <th scope="col">Passwort</th>
-                    <th scope="col">Rollen</th>
+                    <th scope="col">Rolle</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -30,9 +30,7 @@
                         <td>{{ user.vorname }} {{ user.nachname }}</td>
                         <td>{{ user.email }}</td>
                         <td>********</td>
-                        <td>
-                            {% for role in user.roles %}{{ role|replace({'ROLE_': ''})|capitalize }}{% if not loop.last %}, {% endif %}{% endfor %}
-                        </td>
+                        <td>{% if 'ROLE_ADMIN' in user.roles %}Administrator{% else %}Benutzer{% endif %}</td>
                         <td align="right">
                             <a href="users/setpw/{{ user.id }}" class="btn btn-warning btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Neues Passwort setzen"><i class="fas fa-lock"></i></a>
                             <a href="users/edit/{{ user.id }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>

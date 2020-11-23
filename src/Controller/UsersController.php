@@ -59,7 +59,8 @@ class UsersController extends AbstractController
                 'attr' => ['class' => 'form-control mb-3']
             ])
             ->add('password', PasswordType::class, [
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control mb-3'],
+                'label' => "Passwort"
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Speichern',

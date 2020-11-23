@@ -9,6 +9,8 @@ use App\Service\Plugins;
 use App\Entity\Kontenplan;
 use App\Entity\Hauptbuch;
 
+use App\Service\Kontostand;
+
 class KontoauszugController extends AbstractController
 {
     /**
@@ -34,7 +36,7 @@ class KontoauszugController extends AbstractController
     /**
      * @Route("/kontoauszug/show/{id4}", name="kontoauszug_show")
      */
-    public function show(Plugins $plugins, $id4) {
+    public function show(Plugins $plugins, Kontostand $kontostand, $id4) {
         $konti = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
                         ->where('p.id4 IS NOT null')
@@ -50,11 +52,14 @@ class KontoauszugController extends AbstractController
                         ->orderBy('p.datum', 'ASC')
                         ->getQuery()->getResult();
 
+        $saldo = $kontostand->get($id4,$this->getDoctrine());
+
         return $this->render('kontoauszug/index.html.twig', [
             'plugins' => $plugins->get(),
             'konto' => $konto,
             'konti' => $konti,
             'buchungen' => $buchungen,
+            'saldo' => $saldo,
         ]);
     }
 }
