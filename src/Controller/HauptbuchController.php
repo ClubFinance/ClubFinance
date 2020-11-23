@@ -197,7 +197,7 @@ class HauptbuchController extends AbstractController
             $entityManager->persist($data);
             $entityManager->flush();
 
-            // BBestätigung
+            // Bestätigung
             $this->addFlash('success', 'Der Buchungssatz wurde erfasst.');
         }
 

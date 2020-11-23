@@ -17,7 +17,7 @@ class HomeController extends AbstractController
      * @Route("/home", name="home")
      */
     public function index(Plugins $plugins, Kontostand $kontostand) {
-        // -- Dashbboard
+        // -- Dashboard
         // Kapitalverteilung (Bilanz)
         $umlaufvermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
