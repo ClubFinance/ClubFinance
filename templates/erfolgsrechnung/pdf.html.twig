@@ -1,0 +1,63 @@
+{% extends 'pdf.html.twig' %}
+
+{% block pagetitle %}Erfolgsrechnung{% endblock %}
+
+{% block body %}
+<table class="table table-striped mt-5 pt-2">
+    <tbody>
+        <tr style="background-color: #fff;">
+            <td>per {{ stichtag.datum|date("d.m.Y") }} (abgerufen am {{ "now"|date("d.m.Y") }})</td>
+            <td></td>
+        </tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+    <thead class="thead-light">
+        <tr>
+            <th colspan="2">Aufwand</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in aufwand %}
+            {% if key == 'sum' %}
+                <tr>
+                    <th>Summe</th>
+                    <th>{{ value }}</th>
+                </tr>
+            {% elseif (key == "Gewinn") or (key == "Verlust")  %}
+                <tr>
+                    <td class="text-{{ abschlussColor }}">{{ key }}</td>
+                    <td class="text-{{ abschlussColor }}">{{ value }}</td>
+                </tr>
+            {% elseif value == 0  %}
+            {% else %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        <tr><td></td><td></td></tr>
+    </tbody>
+    <thead class="thead-light">
+        <tr>
+            <th colspan="2">Ertrag</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in ertrag %}
+            {% if key == 'sum' %}
+                <tr>
+                    <th>Summe</th>
+                    <th>{{ value }}</th>
+                </tr>
+            {% elseif value == 0  %}
+            {% else %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

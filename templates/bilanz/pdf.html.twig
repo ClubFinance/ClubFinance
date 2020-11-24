@@ -1,0 +1,109 @@
+{% extends 'pdf.html.twig' %}
+
+{% block pagetitle %}Bilanz{% endblock %}
+
+{% block body %}
+<table class="table table-striped mt-5 pt-2">
+    <tbody>
+        <tr style="background-color: #fff;">
+            <td>per {{ stichtag.datum|date("d.m.Y") }} (abgerufen am {{ "now"|date("d.m.Y") }})</td>
+            <td></td>
+        </tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+    <thead class="thead-dark">
+        <tr>
+            <th>Aktiven</th>
+            <th>{{ aktiven }}</th>
+        </tr>
+    </thead>
+    <tbody><tr style="background-color: #fff;"><td></td><td></td></tr></tbody>
+    <thead class="thead-light">
+        <tr>
+            <th>Umlaufvermögen</th>
+            <th>{{ umlaufvermoegen.sum }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in umlaufvermoegen %}
+            {% if key == 'sum' %}
+            {% elseif value == 0  %}
+            {% else %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+    <tbody><tr style="background-color: #fff;"><td></td><td></td></tr></tbody>
+    <thead class="thead-light">
+        <tr>
+            <th>Anlagevermögen</th>
+            <th>{{ anlagevermoegen.sum }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in anlagevermoegen %}
+            {% if key == 'sum' %}
+            {% elseif value == 0  %}
+            {% else %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+    <tbody><tr style="background-color: #fff;"><td></td><td></td></tr></tbody>
+    <thead class="thead-dark">
+        <tr>
+            <th>Passiven</th>
+            <th>{{ passiven }}</th>
+        </tr>
+    </thead>
+    <tbody><tr style="background-color: #fff;"><td></td><td></td></tr></tbody>
+    <thead class="thead-light">
+        <tr>
+            <th>Fremdkapital</th>
+            <th>{{ fremdkapital.sum }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in fremdkapital %}
+            {% if key == 'sum' %}
+            {% elseif value == 0  %}
+            {% else %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+    <tbody><tr style="background-color: #fff;"><td></td><td></td></tr></tbody>
+    <thead class="thead-light">
+        <tr>
+            <th>Eigenkapital</th>
+            <th>{{ eigenkapital.sum }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in eigenkapital %}
+            {% if key == 'sum' %}
+            {% elseif (key == "Gewinn") or (key == "Verlust")  %}
+                <tr>
+                    <td class="text-{{ abschlussColor }}">{{ key }}</td>
+                    <td class="text-{{ abschlussColor }}">{{ value }}</td>
+                </tr>
+            {% elseif value == 0  %}
+            {% else %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
