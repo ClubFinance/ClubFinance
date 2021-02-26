@@ -32,6 +32,7 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch", name="hauptbuch")
      */
     public function index(Plugins $plugins) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Hauptbuch anzeigen
         // Buchungssätze aus DB
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
@@ -51,6 +52,7 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch/export/pdf/{orderby}/{order}", name="hauptbuch_export_pdf")
      */
     public function export_pdf($orderby, $order) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Hauptbuch als PDF exportieren
         // Buchungssätze aus DB
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array($orderby => $order));
@@ -92,6 +94,7 @@ class HauptbuchController extends AbstractController
      * @Route("/hauptbuch/export/xlsx", name="hauptbuch_export_xlsx")
      */
     public function export_xlsx() {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Hauptbuch als XLSX (Excel) exportieren
         // Buchungssätze aus DB
         $buchungssaetze = $this->getDoctrine()->getRepository(Hauptbuch::class)->findBy(array(), array('datum' => 'DESC'));
@@ -151,6 +154,7 @@ class HauptbuchController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function new(Plugins $plugins, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Neuer Buchungssatz
         $hauptbuch = new Hauptbuch();
         
@@ -213,6 +217,7 @@ class HauptbuchController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function newVorlage(Plugins $plugins, Request $request, $soll, $haben, $beschreibung) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Neuer Buchungssatz aus Buchungsvorlage
         $hauptbuch = new Hauptbuch();
 
@@ -283,6 +288,7 @@ class HauptbuchController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Buchungssatz bearbeiten
         // aus DB laden
         $hauptbuch = $this->getDoctrine()->getRepository(Hauptbuch::class)->find($id);
@@ -342,6 +348,7 @@ class HauptbuchController extends AbstractController
      * @Route("hauptbuch/delete/{id}", name="hauptbuch_delete")
      */
     public function delete(Plugins $plugins, $id) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // Buchungssatz löschen
         $buchungssatz = $this->getDoctrine()->getRepository(Hauptbuch::class)->find($id);
 

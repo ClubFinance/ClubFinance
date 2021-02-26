@@ -20,6 +20,7 @@ class KontenplanController extends AbstractController
      * @Route("/kontenplan", name="kontenplan")
      */
     public function index(Plugins $plugins) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Kontenplan anzeigen
         // aus DB auslesen
         $konti = $this->getDoctrine()
@@ -40,6 +41,7 @@ class KontenplanController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Konto bearbeiten
         // aus DB auslesen
         $konto = $this->getDoctrine()->getRepository(Kontenplan::class)->find($id);

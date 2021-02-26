@@ -21,6 +21,7 @@ class ErfolgsrechnungController extends AbstractController
      * @Route("/erfolgsrechnung", name="erfolgsrechnung")
      */
     public function index(Plugins $plugins, Kontostand $kontostand) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- ER anzeigen
         $aufwand = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')
@@ -87,6 +88,7 @@ class ErfolgsrechnungController extends AbstractController
      * @Route("/erfolgsrechnung/export/pdf", name="erfolgsrechnung_export_pdf")
      */
     public function export_pdf(Kontostand $kontostand) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Erfolgsrechnung als PDF exportieren
         $aufwand = $this->getDoctrine()
                         ->getRepository(Kontenplan::class)->createQueryBuilder('p')

@@ -17,6 +17,7 @@ class HomeController extends AbstractController
      * @Route("/home", name="home")
      */
     public function index(Plugins $plugins, Kontostand $kontostand) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Dashboard
         // Kapitalverteilung (Bilanz)
         $umlaufvermoegen = $this->getDoctrine()

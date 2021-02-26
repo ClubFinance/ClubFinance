@@ -26,6 +26,7 @@ class KontoauszugController extends AbstractController
      * @Route("/kontoauszug", name="kontoauszug")
      */
     public function index(Plugins $plugins) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Liste verfügbarer Konti
         // aus DB auslesen
         $konti = $this->getDoctrine()
@@ -48,6 +49,7 @@ class KontoauszugController extends AbstractController
      * @Route("/kontoauszug/show/{id4}", name="kontoauszug_show")
      */
     public function show(Plugins $plugins, Kontostand $kontostand, $id4) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Kontoauszug anzeigen
         // Konti aus DB auslesen
         $konti = $this->getDoctrine()
@@ -84,6 +86,7 @@ class KontoauszugController extends AbstractController
      * @Route("/kontoauszug/export/pdf/{id4}/{orderby}/{order}", name="kontoauszug_export_pdf")
      */
     public function export_pdf(Kontostand $kontostand, $id4, $orderby, $order) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Kontoauszug als PDF exportieren
         // Kontoinformationen aus DB
         $konto = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array('id4' => $id4))[0];
@@ -137,6 +140,7 @@ class KontoauszugController extends AbstractController
      * @Route("/kontoauszug/export/xlsx/{id4}", name="kontoauszug_export_xlsx")
      */
     public function export_xlsx($id4) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Kontoauszug als XLSX (Excel) exportieren
         // Kontoinformationen aus DB
         $konto = $this->getDoctrine()->getRepository(Kontenplan::class)->findBy(array('id4' => $id4))[0];

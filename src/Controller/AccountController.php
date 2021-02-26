@@ -15,8 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AccountController extends AbstractController
-{
+class AccountController extends AbstractController {
     private $rollen = [
         'Normaler Benutzer (standard)' => 'ROLE_USER',
         'Administrator' => 'ROLE_ADMIN',
@@ -31,6 +30,7 @@ class AccountController extends AbstractController
      * @Route("/account/profil", name="account")
      */
     public function index(Plugins $plugins, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Formular für Bearbeitung des eigenen Profils
         // User aus DB laden
         $id = $this->getUser();
@@ -83,6 +83,7 @@ class AccountController extends AbstractController
      * @Route("/account/passwort", name="account_passwort")
      */
     public function pw(Plugins $plugins, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Formular für Passwortänderung
         // User aus DB laden
         $id = $this->getUser();

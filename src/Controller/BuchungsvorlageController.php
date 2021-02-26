@@ -20,6 +20,7 @@ class BuchungsvorlageController extends AbstractController
      * @Route("/buchungsvorlage", name="buchungsvorlage")
      */
     public function index(Plugins $plugins) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Buchungsvorlagen anzeigen
         // aus DB laden
         $vorlagen = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->findAll();
@@ -36,6 +37,7 @@ class BuchungsvorlageController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function new(Plugins $plugins, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Neue Buchungsvorlage
         $vorlage = new Buchungsvorlage();
         
@@ -91,6 +93,7 @@ class BuchungsvorlageController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Buchungsvorlage bearbeiten
         // aus DB laden
         $vorlage = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->find($id);
@@ -143,6 +146,7 @@ class BuchungsvorlageController extends AbstractController
      * @Route("buchungsvorlage/delete/{id}", name="buchungsvorlage_delete")
      */
     public function delete(Plugins $plugins, $id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Buchungsvorlage löschen
         // aus DB laden
         $vorlage = $this->getDoctrine()->getRepository(Buchungsvorlage::class)->find($id);

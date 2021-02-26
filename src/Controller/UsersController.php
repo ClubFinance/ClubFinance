@@ -15,8 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UsersController extends AbstractController
-{
+class UsersController extends AbstractController {
 
     private $rollen = [
         'Normaler Benutzer (standard)' => 'ROLE_USER',
@@ -32,6 +31,7 @@ class UsersController extends AbstractController
      * @Route("/users", name="users")
      */
     public function index(Plugins $plugins) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Nutzer aus DB laden
         $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(), array('nachname' => 'ASC'));
 
@@ -47,6 +47,7 @@ class UsersController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function new(Plugins $plugins, Request $request) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Neuen Nutzer erstellen
         $user = new User();
         
@@ -105,6 +106,7 @@ class UsersController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function edit(Plugins $plugins, Request $request, $id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Nutzer bearbeiten
         // aus DB laden
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
@@ -156,6 +158,7 @@ class UsersController extends AbstractController
      * Method({"GET", "POST"})
      */
     public function setpw(Plugins $plugins, Request $request, $id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // -- Passwort für Nutzer setzen
         // aus DB laden
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
@@ -206,6 +209,7 @@ class UsersController extends AbstractController
      * @Route("users/delete/{id}", name="users_delete")
      */
     public function delete($id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         // Benutzer löschen
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 

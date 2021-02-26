@@ -21,6 +21,7 @@ class BilanzController extends AbstractController
      * @Route("/bilanz", name="bilanz")
      */
     public function index(Plugins $plugins, Kontostand $kontostand) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Bilanz anzeigen
         $umlaufvermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
@@ -126,6 +127,7 @@ class BilanzController extends AbstractController
      * @Route("/bilanz/export/pdf", name="bilanz_export_pdf")
      */
     public function export_pdf(Kontostand $kontostand) {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         // -- Bilanz PDF-export
         $umlaufvermoegen = $this->getDoctrine()
                                 ->getRepository(Kontenplan::class)->createQueryBuilder('p')
